@@ -1,5 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Index, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { IsOptional, IsString } from 'class-validator';
+import { CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -14,9 +13,4 @@ export abstract class BaseEntity {
   @DeleteDateColumn({ type: 'timestamptz', nullable: true })
   deletedAt: Date;
 
-  @Index()
-  @Column({ type: 'varchar', length: 150, nullable: true })
-  @IsString()
-  @IsOptional()
-  slug?: string;
 }

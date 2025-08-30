@@ -15,10 +15,23 @@ import { UserProfileModule } from './modules/user-services/user-profile/user-pro
 import { MediaModule } from './modules/media-services/media/media.module';
 import { TrackModule } from './modules/music-services/track/track.module';
 import { GenresModule } from './modules/music-services/genres/genres.module';
-import { SlideShowModule } from './modules/web-services/slide-show/slide-show.module';
 import { DataCollectModule } from './modules/beta-services/data-collect/data-collect.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { LogoModule } from './modules/setting-services/logo/logo.module';
+import { SocialLinksModule } from './modules/setting-services/social-links/social-links.module';
+import { FaqModule } from './modules/setting-services/faq/faq.module';
+import { SubscribersModule } from './modules/setting-services/subscribers/subscribers.module';
+import { HomeSlideShowModule } from './modules/setting-services/home-slide-show/home-slide-show.module';
+import { MusicCollectionsModule } from './modules/setting-services/music-collections/music-collections.module';
+import { ProductCategoryModule } from './modules/product-services/product-category/product-category.module';
+import { ProductsModule } from './modules/product-services/products/products.module';
+import { AddressModule } from './modules/customer-services/address/address.module';
+import { CustomersModule } from './modules/customer-services/customers/customers.module';
+import { OrdersModule } from './modules/order-services/orders/orders.module';
+import { CartModule } from './modules/product-services/cart/cart.module';
+import { OrderItemsModule } from './modules/order-services/order-items/order-items.module';
+import { CartItemsModule } from './modules/product-services/cart-items/cart-items.module';
 
 @Module({
   imports: [
@@ -55,8 +68,21 @@ import { join } from 'path';
     MediaModule,
     TrackModule,
     GenresModule,
-    SlideShowModule,
     DataCollectModule,
+    LogoModule,
+    SocialLinksModule,
+    FaqModule,
+    SubscribersModule,
+    HomeSlideShowModule,
+    MusicCollectionsModule,
+    ProductCategoryModule,
+    ProductsModule,
+    AddressModule,
+    CustomersModule,
+    OrdersModule,
+    CartModule,
+    OrderItemsModule,
+    CartItemsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

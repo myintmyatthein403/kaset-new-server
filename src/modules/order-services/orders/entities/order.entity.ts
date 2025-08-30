@@ -1,0 +1,42 @@
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { ORDER_STAUTS, PAYMENT_STATUS } from "src/common/enums/enums";
+import { Address } from "src/modules/customer-services/address/entities/address.entity";
+import { Media } from "src/modules/media-services/media/entities/media.entity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
+import { OrderItem } from "../../order-items/entities/order-item.entity";
+import { Customer } from "src/modules/customer-services/customers/entities/customer.entity";
+import { BaseEntity } from "src/common/base/base.entity";
+
+@Entity('orders')
+export class Order extends BaseEntity {
+  @Column({ type: 'float' })
+  @IsNumber()
+  @IsNotEmpty()
+  total_amount: number;
+
+  @Column({ type: 'enum', enum: ORDER_STAUTS, default: ORDER_STAUTS.PENDING })
+  @IsEnum(ORDER_STAUTS)
+  order_status: ORDER_STAUTS;
+
+  @Column({ type: 'enum', enum: PAYMENT_STATUS, default: PAYMENT_STATUS.PENDING })
+  @IsEnum(PAYMENT_STATUS)
+  payment_status: PAYMENT_STATUS;
+
+  @Column({ type: 'varchar', length: 255 })
+  @IsString()
+  @IsNotEmpty()
+  stripe_session_id: string;
+
+  @ManyToOne(() => Customer, { eager: true })
+  customer: Customer;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  order_items: OrderItem[]
+
+  @ManyToOne(() => Address, { eager: true })
+  shipping_address: Address
+
+  @OneToOne(() => Media, { eager: true })
+  @JoinColumn({ name: 'prove_image_id' })
+  prove_of_payment: Media;
+}

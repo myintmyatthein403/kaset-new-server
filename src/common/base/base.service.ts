@@ -102,13 +102,5 @@ export class BaseService<T extends BaseEntity> {
     return result.affected
   }
 
-  async fndWithSlug(slug: string, relations: string[] = []): Promise<T | null> {
-    const entity = await this.repository.findOne({
-      where: {
-        slug: slug as any,
-      },
-      relations
-    })
-    return entity;
-  }
+
 }

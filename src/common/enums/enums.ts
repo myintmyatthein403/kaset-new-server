@@ -38,3 +38,21 @@ export enum GENDER_TYPES {
   FEMALE = "female",
   OTHER = "other"
 }
+
+export enum ORDER_STAUTS {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  SHIPPED = 'shipped'
+}
+
+export enum PAYMENT_STATUS {
+  PENDING = 'pending',
+  PAID = 'paid',
+  FAILED = 'failed'
+}
+
+export enum PAYMENT_METHOD {
+  COD = "cod",
+  CARD = "card",
+  MOBILE_BANKING = "mobile_banking"
+}

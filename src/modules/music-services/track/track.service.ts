@@ -12,4 +12,14 @@ export class TrackService extends BaseService<Track> {
   ) {
     super(trackRepository)
   }
+
+  async fndWithSlug(slug: string, relations: string[] = []): Promise<Track | null> {
+    const entity = await this.trackRepository.findOne({
+      where: {
+        slug: slug as any,
+      },
+      relations
+    })
+    return entity;
+  }
 }
