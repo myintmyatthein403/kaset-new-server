@@ -1,7 +1,7 @@
 import { IsBoolean, IsJSON, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { BaseEntity } from "src/common/base/base.entity";
 import { Media } from "src/modules/media-services/media/entities/media.entity";
-import { Column, Entity, Index, ManyToOne, OneToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { ProductCategory } from "../../product-category/entities/product-category.entity";
 import { CartItem } from "../../cart-items/entities/cart-item.entity";
 import { OrderItem } from "src/modules/order-services/order-items/entities/order-item.entity";
@@ -22,7 +22,7 @@ export class Product extends BaseEntity {
   @Column({ type: 'float' })
   @IsNumber()
   @IsNotEmpty()
-  base_price: string;
+  base_price: number;
 
   @Index()
   @Column({ type: 'varchar', length: 150 })
@@ -44,12 +44,13 @@ export class Product extends BaseEntity {
   @IsOptional()
   stripe_price_id?: string;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ type: 'text', nullable: true })
   @IsJSON()
   @IsOptional()
-  included_item?: JSON;
+  included_item?: string;
 
   @OneToOne(() => Media, { eager: true })
+  @JoinColumn({ name: 'product_image_id' })
   product_image: Media;
 
   @ManyToOne(() => ProductCategory, { eager: true })
