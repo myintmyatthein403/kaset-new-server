@@ -32,6 +32,7 @@ import { OrdersModule } from './modules/order-services/orders/orders.module';
 import { CartModule } from './modules/product-services/cart/cart.module';
 import { OrderItemsModule } from './modules/order-services/order-items/order-items.module';
 import { CartItemsModule } from './modules/product-services/cart-items/cart-items.module';
+import { PlatformsModule } from './modules/setting-services/platforms/platforms.module';
 
 @Module({
   imports: [
@@ -83,6 +84,7 @@ import { CartItemsModule } from './modules/product-services/cart-items/cart-item
     CartModule,
     OrderItemsModule,
     CartItemsModule,
+    PlatformsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
