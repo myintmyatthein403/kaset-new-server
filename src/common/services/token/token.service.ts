@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Payload } from 'src/common/types/types';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TokenService {
   constructor(private readonly jwtService: JwtService) { }
 
-  generateAccessToken(payload: Payload) {
+  generateAccessToken(payload: any) {
     return this.jwtService.sign(payload, {
       expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN || '15m',
     });
@@ -20,4 +20,9 @@ export class TokenService {
       expiresIn: rememberMe ? REMEMBERED_TOKEN_EXPIRES_IN : TOKEN_EXPIRES_IN,
     });
   }
+
+  generateApiKey(): string {
+    return uuidv4();
+  }
+
 }

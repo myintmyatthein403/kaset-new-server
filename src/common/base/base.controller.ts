@@ -15,12 +15,10 @@ import { BaseEntity } from './base.entity';
 import { DeepPartial } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { JwtAuthGuard } from '../guards/jwt.guard';
-import { DataOwnerGuard } from '../guards/owner.guard';
 
 export class BaseController<T extends BaseEntity> {
   constructor(private readonly baseService: BaseService<T>) { }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all entities with filtering, relations, and pagination' })
   @ApiQuery({ name: 'relations', required: false, description: 'Comma-separated related entities to include' })
@@ -32,7 +30,7 @@ export class BaseController<T extends BaseEntity> {
     @Query('relations') relations?: string,
     @Query('filters') filters?: string,
     @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('limit') limit: number = 10000,
   ) {
     const relationsArray = relations ? relations.split(',') : [];
     let filterObject = {};
@@ -74,7 +72,6 @@ export class BaseController<T extends BaseEntity> {
     return this.baseService.findOne(id, relationsArray, filterObject);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create a new entity' })
   @ApiBody({ description: 'Entity data', type: Object })

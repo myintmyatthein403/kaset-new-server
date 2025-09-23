@@ -3,14 +3,16 @@ import { HomeSlideShowService } from './home-slide-show.service';
 import { HomeSlideShowController } from './home-slide-show.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HomeSlideShow } from './entities/home-slide-show.entity';
+import { ApiToken } from 'src/modules/auth-services/api-token/entities/api-token.entity';
+import { ApiKeyGuard } from 'src/common/guards/api-key.guard';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [HomeSlideShow]
+      [HomeSlideShow, ApiToken]
     )
   ],
   controllers: [HomeSlideShowController],
-  providers: [HomeSlideShowService],
+  providers: [HomeSlideShowService, ApiKeyGuard],
 })
 export class HomeSlideShowModule { }

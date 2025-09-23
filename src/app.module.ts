@@ -33,6 +33,18 @@ import { CartModule } from './modules/product-services/cart/cart.module';
 import { OrderItemsModule } from './modules/order-services/order-items/order-items.module';
 import { CartItemsModule } from './modules/product-services/cart-items/cart-items.module';
 import { PlatformsModule } from './modules/setting-services/platforms/platforms.module';
+import { SocialMediaLinksModule } from './modules/setting-services/social-media-links/social-media-links.module';
+import { ArtistModule } from './modules/user-services/artist/artist.module';
+import { StripeModule } from './modules/payment-services/stripe/stripe.module';
+import { ExchangeRateModule } from './modules/setting-services/exchange-rate/exchange-rate.module';
+import { ProductAttributeModule } from './modules/product-services/product-attribute/product-attribute.module';
+import { ProductAttributeValueModule } from './modules/product-services/product-attribute-value/product-attribute-value.module';
+import { ProductVariationModule } from './modules/product-services/product-variation/product-variation.module';
+import { ApiTokenModule } from './modules/auth-services/api-token/api-token.module';
+import { AlbumModule } from './modules/music-services/album/album.module';
+import { MusicLinkModule } from './modules/music-services/music-link/music-link.module';
+import { PopularTracksModule } from './modules/music-services/popular-tracks/popular-tracks.module';
+import { FeaturedArtistsModule } from './modules/music-services/featured-artists/featured-artists.module';
 
 @Module({
   imports: [
@@ -85,6 +97,18 @@ import { PlatformsModule } from './modules/setting-services/platforms/platforms.
     OrderItemsModule,
     CartItemsModule,
     PlatformsModule,
+    SocialMediaLinksModule,
+    ArtistModule,
+    StripeModule,
+    ExchangeRateModule,
+    ProductAttributeModule,
+    ProductAttributeValueModule,
+    ProductVariationModule,
+    ApiTokenModule,
+    AlbumModule,
+    MusicLinkModule,
+    PopularTracksModule,
+    FeaturedArtistsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

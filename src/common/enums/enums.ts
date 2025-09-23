@@ -56,3 +56,8 @@ export enum PAYMENT_METHOD {
   CARD = "card",
   MOBILE_BANKING = "mobile_banking"
 }
+
+export enum LYRIC_TYPE {
+  IMAGE = "image",
+  TEXT = "text"
+}

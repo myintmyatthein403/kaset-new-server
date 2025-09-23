@@ -4,7 +4,6 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { PaginationOptions, PaginatedResult } from '../utils/pagination.util';
 import { buildWhereCondition } from '../utils/fitler.util';
-import { filter } from 'rxjs';
 
 export class BaseService<T extends BaseEntity> {
   constructor(private readonly repository: Repository<T>) { }
@@ -12,10 +11,10 @@ export class BaseService<T extends BaseEntity> {
   async findAll(
     relations: string[] = [],
     filters: Record<string, any> = {},
-    options: PaginationOptions = { page: 1, limit: 10 }
+    options: PaginationOptions = { page: 1, limit: 10000 }
   ): Promise<PaginatedResult<T>> {
     const page = options.page ? Math.max(1, options.page) : 1;
-    const limit = options.limit ? Math.max(1, options.limit) : 10;
+    const limit = options.limit ? Math.max(1, options.limit) : 10000;
     const skip = (page - 1) * limit;
 
     const whereClause = buildWhereCondition(filters);

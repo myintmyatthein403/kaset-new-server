@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserProfileDto } from './dto/create-user-profile.dto';
-import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
+import { BaseService } from 'src/common/base/base.service';
+import { UserProfile } from './entities/user-profile.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
-export class UserProfileService {
-  create(createUserProfileDto: CreateUserProfileDto) {
-    return 'This action adds a new userProfile';
-  }
-
-  findAll() {
-    return `This action returns all userProfile`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} userProfile`;
-  }
-
-  update(id: number, updateUserProfileDto: UpdateUserProfileDto) {
-    return `This action updates a #${id} userProfile`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} userProfile`;
+export class UserProfileService extends BaseService<UserProfile> {
+  constructor(
+    @InjectRepository(UserProfile)
+    private readonly userProfileRepository: Repository<UserProfile>,
+  ) {
+    super(userProfileRepository);
   }
 }

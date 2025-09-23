@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { BaseEntity } from "src/common/base/base.entity";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany } from "typeorm";
+import { Track } from "../../track/entities/track.entity";
 
 @Entity('genres')
 export class Genre extends BaseEntity {
@@ -13,4 +14,8 @@ export class Genre extends BaseEntity {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ManyToMany(() => Track, track => track.genres)
+  @JoinTable()
+  tracks: Track[];
 }

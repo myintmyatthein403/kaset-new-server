@@ -43,4 +43,10 @@ export type Payload = {
   email?: string;
   status: string;
   line_user_id?: string;
+  role: Role;
 };
+
+export type Role = {
+  id: string;
+  name: string;
+}

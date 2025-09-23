@@ -219,9 +219,7 @@ export class AuthService {
     try {
       // 1. Verify the refresh token to get the payload
       // This will throw an error if the token is invalid or expired
-      console.log(refreshToken)
       const payload: Payload = this.jwtService.verify(refreshToken);
-      console.log(payload)
 
       // 2. Use the user data from the refresh token's payload
       // to generate a new access token

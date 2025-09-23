@@ -12,5 +12,4 @@ export class UserService extends BaseService<User> {
   ) {
     super(userRepository)
   }
-
 }

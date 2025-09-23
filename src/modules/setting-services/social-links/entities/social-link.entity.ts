@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsEmail, IsOptional, IsString } from "class-validator";
 import { BaseEntity } from "src/common/base/base.entity";
 import { Column, Entity } from "typeorm";
 
@@ -23,4 +23,19 @@ export class SocialLink extends BaseEntity {
   @IsString()
   @IsOptional()
   tiktok_url?: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @IsString()
+  @IsOptional()
+  twitter_url?: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @IsString()
+  @IsOptional()
+  linkedin_url?: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @IsEmail()
+  @IsOptional()
+  contact_email?: string;
 }

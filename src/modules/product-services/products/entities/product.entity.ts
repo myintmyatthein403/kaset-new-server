@@ -1,11 +1,12 @@
 import { IsBoolean, IsJSON, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { BaseEntity } from "src/common/base/base.entity";
 import { Media } from "src/modules/media-services/media/entities/media.entity";
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne } from "typeorm";
 import { ProductCategory } from "../../product-category/entities/product-category.entity";
 import { CartItem } from "../../cart-items/entities/cart-item.entity";
 import { OrderItem } from "src/modules/order-services/order-items/entities/order-item.entity";
 import { Order } from "src/modules/order-services/orders/entities/order.entity";
+import { ProductAttributeValue } from "../../product-attribute-value/entities/product-attribute-value.entity";
 
 @Entity('products')
 export class Product extends BaseEntity {
@@ -61,4 +62,18 @@ export class Product extends BaseEntity {
 
   @ManyToOne(() => OrderItem, { eager: true })
   order_item: OrderItem
+
+  @ManyToMany(() => ProductAttributeValue)
+  @JoinTable({
+    name: 'product_variation_attribute_values', // The name of the join table
+    joinColumn: {
+      name: 'variation_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'attribute_value_id',
+      referencedColumnName: 'id',
+    },
+  })
+  attributeValues: ProductAttributeValue[];
 }
