@@ -32,10 +32,10 @@ export class Track extends BaseEntity {
   @IsOptional()
   description: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'text', nullable: true })
   @IsString()
   @IsOptional()
-  youtube_url?: string;
+  credit?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   @IsString()

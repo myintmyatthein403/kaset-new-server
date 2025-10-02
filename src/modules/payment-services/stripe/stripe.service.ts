@@ -22,22 +22,53 @@ export class StripeService {
     });
   }
 
-  async createProduct(
-    data: any
-  ): Promise<Stripe.Product> {
+
+
+  async createProductWithVariants(
+    productData: {
+      name: string;
+      description: string;
+      variations: {
+        sku: string;
+        size: string;
+        color_name: string;
+        color_code: string;
+        price: number;
+      }[];
+    }
+  ): Promise<Stripe.Product[]> {
+    const createdStripeProducts: Stripe.Product[] = [];
+
     try {
-      const { name, description, price } = data;
-      const product = await this.stripe.products.create({ name, description });
-      await this.stripe.prices.create({
-        product: product.id,
-        unit_amount: price * 100, // amount in cents
-        currency: 'thb',
-        active: true,
-      });
-      // this.logger.log(`Product created successfully: ${name}`);
-      return product;
+      for (const variant of productData.variations) {
+        // Create a unique name for each variant
+        // e.g., "My T-shirt - Size M, Color Red"
+        const variantName = `${productData.name} - Size ${variant.size}, Color ${variant.color_name}`;
+
+        // Create the Stripe Product for this specific variant
+        const product = await this.stripe.products.create({
+          name: variantName,
+          description: productData.description,
+          // Optional: Add metadata to store your internal variant ID
+          metadata: {
+            sku: variant.sku,
+          },
+        });
+
+        // Create the Stripe Price for this product variant
+        await this.stripe.prices.create({
+          product: product.id,
+          unit_amount: variant.price * 100, // Amount in cents
+          currency: 'thb',
+          active: true,
+        });
+
+        createdStripeProducts.push(product);
+      }
+
+      return createdStripeProducts;
     } catch (error) {
-      // this.logger.error('Failed to create product', error.stack);
+      // this.logger.error('Failed to create products with variants', error.stack);
       throw error;
     }
   }
@@ -93,6 +124,96 @@ export class StripeService {
           `Product with ID ${productId} cannot be deleted because it has associated prices. Please archive it instead.`,
         );
       }
+      throw error;
+    }
+  }
+
+  async createCheckoutSession(cartItems) {
+    const lineItems = cartItems.map((item: any) => {
+      return {
+        price_data: {
+          currency: 'thb',
+          unit_amount: Math.round(Number(item.variation.price) * 100),
+          product_data: {
+            name: `${item.variation.sku}-${item.variation.size}-${item.variation.color_name}`
+          }
+        },
+        quantity: item.quantity
+      }
+    })
+
+    try {
+      const session = await this.stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: lineItems,
+        mode: 'payment',
+        success_url: 'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: 'http://localhost:3000/cancel',
+      });
+
+      return session;
+    } catch (error) {
+      // this.logger.error('Failed to create checkout session', error.stack);
+      throw error;
+    }
+  }
+
+  async createPaymentIntent(amount: number, currency: string): Promise<Stripe.PaymentIntent> {
+    try {
+      const paymentIntent = await this.stripe.paymentIntents.create({
+        amount: amount * 100, // Amount in cents
+        currency: currency,
+      });
+      return paymentIntent;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async capturePaymentIntent(paymentIntentId: string): Promise<Stripe.PaymentIntent> {
+    try {
+      const paymentIntent = await this.stripe.paymentIntents.capture(paymentIntentId);
+      return paymentIntent;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async refundPaymentIntent(paymentIntentId: string, amount?: number): Promise<Stripe.Refund> {
+    try {
+      const refund = await this.stripe.refunds.create({
+        payment_intent: paymentIntentId,
+        amount: amount ? amount * 100 : undefined, // Amount in cents, optional
+      });
+      return refund;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getProduct(productId: string): Promise<Stripe.Product> {
+    try {
+      const product = await this.stripe.products.retrieve(productId);
+      return product;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async listProducts(): Promise<Stripe.Product[]> {
+    try {
+      const products = await this.stripe.products.list();
+      return products.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async listPrices(productId: string): Promise<Stripe.Price[]> {
+    try {
+      const prices = await this.stripe.prices.list({ product: productId });
+      return prices.data;
+    } catch (error) {
       throw error;
     }
   }

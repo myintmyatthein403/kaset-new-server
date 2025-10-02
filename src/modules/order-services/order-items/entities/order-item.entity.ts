@@ -3,6 +3,7 @@ import { BaseEntity } from "src/common/base/base.entity";
 import { Product } from "src/modules/product-services/products/entities/product.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { Order } from "../../orders/entities/order.entity";
+import { ProductVariation } from "src/modules/product-services/product-variation/entities/product-variation.entity";
 
 @Entity('order-items')
 export class OrderItem extends BaseEntity {
@@ -16,8 +17,11 @@ export class OrderItem extends BaseEntity {
   @IsNotEmpty()
   price_at_order: Number;
 
-  @OneToMany(() => Product, (product) => product.order_item)
-  products: Product[];
+  @ManyToOne(() => Product, { eager: true })
+  product: Product;
+
+  @ManyToOne(() => ProductVariation, { eager: true })
+  variation: ProductVariation
 
   @ManyToOne(() => Order, { eager: true })
   order: Order;

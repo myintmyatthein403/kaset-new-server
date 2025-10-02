@@ -11,6 +11,13 @@ export class ProductAttributeValue extends BaseEntity {
   })
   @IsString()
   @IsNotEmpty()
+  attribute: string;
+
+  @Column({
+    type: 'varchar',
+  })
+  @IsString()
+  @IsNotEmpty()
   value: string;
 
   @ManyToOne(() => ProductAttribute, { eager: true })

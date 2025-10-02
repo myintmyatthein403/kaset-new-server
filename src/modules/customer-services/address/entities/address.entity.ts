@@ -1,6 +1,7 @@
 import { IsOptional, IsPhoneNumber, IsString } from "class-validator";
 import { BaseEntity } from "src/common/base/base.entity";
-import { Entity, Column } from "typeorm";
+import { Customer } from "src/modules/user-services/customer/entities/customer.entity";
+import { Entity, Column, ManyToOne } from "typeorm";
 
 @Entity('address')
 export class Address extends BaseEntity {
@@ -47,4 +48,7 @@ export class Address extends BaseEntity {
   @IsPhoneNumber()
   @IsOptional()
   phone_number?: string
+
+  @ManyToOne(() => Customer, { onDelete: 'CASCADE', eager: true })
+  customer: Customer
 }

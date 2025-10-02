@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { SwaggerModule } from '@nestjs/swagger';
 import { SwaggerConfig } from './common/config/swagger-ui.config';
 import { WinstonLoggerService } from './common/services/logger/winston-logger.service';
+import { json } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,16 @@ async function bootstrap() {
   })
 
   app.setGlobalPrefix('/api')
+
+  app.use(
+    json({
+      verify: (req: any, res, buf) => {
+        if (req.originalUrl.includes('/stripe-webhook')) {
+          req.rawBody = buf.toString();
+        }
+      },
+    }),
+  );
 
   const document = SwaggerModule.createDocument(app, SwaggerConfig);
   SwaggerModule.setup('api/v1/documentation', app, document);

@@ -268,6 +268,10 @@ export class AuthService {
     };
   }
 
+  async googleAuthRedirect(accessToken: string) {
+    console.log(accessToken)
+    return accessToken;
+  }
   /* async lineLogin(lineLoginAuthDto: any) {
     const employee = await this.employeeRepository.findOne({
       where: {

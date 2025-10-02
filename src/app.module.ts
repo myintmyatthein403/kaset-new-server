@@ -27,7 +27,6 @@ import { MusicCollectionsModule } from './modules/setting-services/music-collect
 import { ProductCategoryModule } from './modules/product-services/product-category/product-category.module';
 import { ProductsModule } from './modules/product-services/products/products.module';
 import { AddressModule } from './modules/customer-services/address/address.module';
-import { CustomersModule } from './modules/customer-services/customers/customers.module';
 import { OrdersModule } from './modules/order-services/orders/orders.module';
 import { CartModule } from './modules/product-services/cart/cart.module';
 import { OrderItemsModule } from './modules/order-services/order-items/order-items.module';
@@ -45,6 +44,11 @@ import { AlbumModule } from './modules/music-services/album/album.module';
 import { MusicLinkModule } from './modules/music-services/music-link/music-link.module';
 import { PopularTracksModule } from './modules/music-services/popular-tracks/popular-tracks.module';
 import { FeaturedArtistsModule } from './modules/music-services/featured-artists/featured-artists.module';
+import { CustomerModule } from './modules/user-services/customer/customer.module';
+import { FeaturedProductsModule } from './modules/product-services/featured-products/featured-products.module';
+import { StripeWebhookController } from './stripe/stripe-webhook/stripe-webhook.controller';
+import { StripeWebhookModule } from './stripe/stripe-webhook/stripe-webhook.module';
+import { DingerModule } from './modules/payment-services/dinger/dinger.module';
 
 @Module({
   imports: [
@@ -91,7 +95,6 @@ import { FeaturedArtistsModule } from './modules/music-services/featured-artists
     ProductCategoryModule,
     ProductsModule,
     AddressModule,
-    CustomersModule,
     OrdersModule,
     CartModule,
     OrderItemsModule,
@@ -109,8 +112,12 @@ import { FeaturedArtistsModule } from './modules/music-services/featured-artists
     MusicLinkModule,
     PopularTracksModule,
     FeaturedArtistsModule,
+    CustomerModule,
+    FeaturedProductsModule,
+    StripeWebhookModule,
+    DingerModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, StripeWebhookController],
   providers: [AppService],
 })
 export class AppModule implements OnModuleInit {

@@ -1,11 +1,11 @@
 import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
-import { ORDER_STAUTS, PAYMENT_STATUS } from "src/common/enums/enums";
+import { ORDER_STAUTS, PAYMENT_METHOD, PAYMENT_STATUS } from "src/common/enums/enums";
 import { Address } from "src/modules/customer-services/address/entities/address.entity";
 import { Media } from "src/modules/media-services/media/entities/media.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { OrderItem } from "../../order-items/entities/order-item.entity";
-import { Customer } from "src/modules/customer-services/customers/entities/customer.entity";
 import { BaseEntity } from "src/common/base/base.entity";
+import { Customer } from "src/modules/user-services/customer/entities/customer.entity";
 
 @Entity('orders')
 export class Order extends BaseEntity {
@@ -22,6 +22,10 @@ export class Order extends BaseEntity {
   @IsEnum(PAYMENT_STATUS)
   payment_status: PAYMENT_STATUS;
 
+  @Column({ type: 'enum', enum: PAYMENT_METHOD, default: PAYMENT_METHOD.CARD })
+  @IsEnum(PAYMENT_METHOD)
+  payment_method: PAYMENT_METHOD;
+
   @Column({ type: 'varchar', length: 255 })
   @IsString()
   @IsNotEmpty()
@@ -35,8 +39,4 @@ export class Order extends BaseEntity {
 
   @ManyToOne(() => Address, { eager: true })
   shipping_address: Address
-
-  @OneToOne(() => Media, { eager: true })
-  @JoinColumn({ name: 'prove_image_id' })
-  prove_of_payment: Media;
 }

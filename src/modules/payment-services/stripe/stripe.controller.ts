@@ -8,7 +8,7 @@ export class StripeController {
 
   @Post()
   create(@Body() createStripeDto: any) {
-    return this.stripeService.createProduct(createStripeDto);
+    return this.stripeService.createProductWithVariants(createStripeDto);
   }
 
   @Patch(':id/price')
