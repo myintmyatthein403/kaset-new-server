@@ -54,7 +54,8 @@ export enum PAYMENT_STATUS {
 export enum PAYMENT_METHOD {
   COD = "cod",
   CARD = "card",
-  MOBILE_BANKING = "mobile_banking"
+  KBZ_PAY_QR = "kbz_pay_qr",
+  KBZ_PAY_PWA = "kbz_pay_pwa"
 }
 
 export enum LYRIC_TYPE {

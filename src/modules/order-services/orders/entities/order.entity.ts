@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { ORDER_STAUTS, PAYMENT_METHOD, PAYMENT_STATUS } from "src/common/enums/enums";
 import { Address } from "src/modules/customer-services/address/entities/address.entity";
 import { Media } from "src/modules/media-services/media/entities/media.entity";
@@ -26,9 +26,9 @@ export class Order extends BaseEntity {
   @IsEnum(PAYMENT_METHOD)
   payment_method: PAYMENT_METHOD;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   stripe_session_id: string;
 
   @ManyToOne(() => Customer, { eager: true })

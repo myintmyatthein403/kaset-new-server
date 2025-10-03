@@ -61,7 +61,7 @@ export class DingerService {
     const items = orderData.orderItems.map((item: any) => {
       return {
         name: `${item.product.name}-${item.variation.size}-${item.variation.color_name}`,
-        amount: Number(item.variation.price),
+        amount: orderData.paymentMethod == 'card' ? Number(item.variation.price) : Number(item.variation.price) * orderData.rate,
         quantity: item.quantity
       }
     })
@@ -86,7 +86,7 @@ export class DingerService {
       customerName: customerName,
       description: description,
       customerAddress: customerAddress,
-      totalAmount: totalAmount,
+      totalAmount: orderData.paymentMethod == "card" ? totalAmount : totalAmount * orderData.rate,
       items: JSON.stringify(items)
     });
     console.log(data)
@@ -117,6 +117,7 @@ export class DingerService {
     try {
       const { data } = await axios.request(options);
       console.log(data);
+      return data?.response;
     } catch (error) {
       console.error(error);
     }

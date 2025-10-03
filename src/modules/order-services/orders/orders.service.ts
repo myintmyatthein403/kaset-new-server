@@ -77,14 +77,14 @@ export class OrdersService extends BaseService<Order> {
         return Number(item.priceAtOrder) * Number(item.quantity)
       }).reduce((sum, current) => sum + current, 0)
 
-      await this.dingerService.Pay(orderData)
+      const dingerData = await this.dingerService.Pay(orderData)
       try {
         let order = transactionalEntityManager.create(Order, {
           total_amount: totalAmount,
           order_status: ORDER_STAUTS.PENDING,
           payment_status: PAYMENT_STATUS.PENDING,
           payment_method: orderData.paymentMethod,
-          stripe_session_id: checkoutSession ? checkoutSession.id : null,
+          stripe_session_id: checkoutSession ? checkoutSession?.id : null,
           customer: {
             id: customer?.id
           },
@@ -111,9 +111,11 @@ export class OrdersService extends BaseService<Order> {
 
           await transactionalEntityManager.save(orderItem)
         }))
+        console.log('dingerData: ', dingerData)
         return {
           order,
-          stripeSessionId: checkoutSession.id,
+          stripeSessionId: checkoutSession?.id,
+          dingerData,
         }
       } catch (error) {
         console.error(error)
