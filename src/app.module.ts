@@ -49,6 +49,7 @@ import { FeaturedProductsModule } from './modules/product-services/featured-prod
 import { StripeWebhookController } from './stripe/stripe-webhook/stripe-webhook.controller';
 import { StripeWebhookModule } from './stripe/stripe-webhook/stripe-webhook.module';
 import { DingerModule } from './modules/payment-services/dinger/dinger.module';
+import { CollectionsModule } from './modules/music-services/collections/collections.module';
 
 @Module({
   imports: [
@@ -116,6 +117,7 @@ import { DingerModule } from './modules/payment-services/dinger/dinger.module';
     FeaturedProductsModule,
     StripeWebhookModule,
     DingerModule,
+    CollectionsModule,
   ],
   controllers: [AppController, StripeWebhookController],
   providers: [AppService],
