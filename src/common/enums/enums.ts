@@ -48,7 +48,9 @@ export enum ORDER_STAUTS {
 export enum PAYMENT_STATUS {
   PENDING = 'pending',
   PAID = 'paid',
-  FAILED = 'failed'
+  FAILED = 'failed',
+  EXPIRED = 'expired',
+  CANCELLED = 'cancelled'
 }
 
 export enum PAYMENT_METHOD {

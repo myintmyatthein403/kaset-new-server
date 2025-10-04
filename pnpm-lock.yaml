@@ -47,6 +47,9 @@ importers:
       '@types/passport-jwt':
         specifier: ^4.0.1
         version: 4.0.1
+      aes-ecb:
+        specifier: ^1.3.15
+        version: 1.3.15
       axios:
         specifier: ^1.12.2
         version: 1.12.2
@@ -68,6 +71,9 @@ importers:
       geoip-lite:
         specifier: ^1.4.10
         version: 1.4.10
+      js-sha256:
+        specifier: ^0.11.1
+        version: 0.11.1
       multer:
         specifier: ^2.0.2
         version: 2.0.2
@@ -1406,6 +1412,12 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
+  aes-ecb@1.3.15:
+    resolution: {integrity: sha512-dbOpCkeOiSEV+60VhmvdxyIsFHgXczmik/7V3VtylXmfSqnge0rPG4XaSjQHeoqkmlKq6ndFIIKL4AYap1z2Gg==}
+
+  aes-js@3.1.2:
+    resolution: {integrity: sha512-e5pEa2kBnBOgR4Y/p20pskXI74UEz7de8ZGVo58asOtvSVG5YAbJeELPZxOmt+Bnz3rX753YKhfIn4X4l1PPRQ==}
+
   ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
     peerDependencies:
@@ -2652,6 +2664,9 @@ packages:
     peerDependenciesMeta:
       node-notifier:
         optional: true
+
+  js-sha256@0.11.1:
+    resolution: {integrity: sha512-o6WSo/LUvY2uC4j7mO50a2ms7E/EAdbP0swigLV+nzHKTTaYnaLIWJ02VdXrsJX0vGedDESQnLsOekr94ryfjg==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -5492,6 +5507,12 @@ snapshots:
 
   acorn@8.15.0: {}
 
+  aes-ecb@1.3.15:
+    dependencies:
+      aes-js: 3.1.2
+
+  aes-js@3.1.2: {}
+
   ajv-formats@2.1.1(ajv@8.17.1):
     optionalDependencies:
       ajv: 8.17.1
@@ -6983,6 +7004,8 @@ snapshots:
       - babel-plugin-macros
       - supports-color
       - ts-node
+
+  js-sha256@0.11.1: {}
 
   js-tokens@4.0.0: {}
 

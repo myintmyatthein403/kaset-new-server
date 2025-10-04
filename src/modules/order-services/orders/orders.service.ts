@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { BaseService } from 'src/common/base/base.service';
 import { Order } from './entities/order.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Address } from 'src/modules/customer-services/address/entities/address.entity';
 import { Customer } from 'src/modules/user-services/customer/entities/customer.entity';
 import { OrderItem } from '../order-items/entities/order-item.entity';
 import { ORDER_STAUTS, PAYMENT_METHOD, PAYMENT_STATUS } from 'src/common/enums/enums';
 import { StripeService } from 'src/modules/payment-services/stripe/stripe.service';
 import { DingerService } from 'src/modules/payment-services/dinger/dinger.service';
+import { StripeLog } from 'src/modules/payment-services/stripe-log/entities/stripe-log.entity';
+import { DingerLogService } from 'src/modules/payment-services/dinger-log/dinger-log.service';
+import { getMethodAndProvider } from 'src/common/utils/payment_method.util';
+import { DingerLog } from 'src/modules/payment-services/dinger-log/entities/dinger-log.entity';
+import { PaymentLog } from 'src/modules/payment-services/payment-log/entities/payment-log.entity';
 
 @Injectable()
 export class OrdersService extends BaseService<Order> {
@@ -16,15 +21,23 @@ export class OrdersService extends BaseService<Order> {
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
 
+    @InjectRepository(StripeLog)
+    private readonly stripeLogRepository: Repository<StripeLog>,
+
+
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+
     private readonly stripeService: StripeService,
 
     private readonly dingerService: DingerService,
+
   ) {
     super(orderRepository)
   }
 
   async createNewOrder(data: any, user: any) {
-    const newOrder = await this.orderRepository.manager.transaction(async transactionalEntityManager => {
+    const newOrder = await this.dataSource.transaction(async transactionalEntityManager => {
       const orderData = data.data;
       let shipping_address: Address;
 
@@ -57,9 +70,13 @@ export class OrdersService extends BaseService<Order> {
       }
 
       let checkoutSession;
+      let dingerData;
       if (orderData.paymentMethod == "card") {
         checkoutSession = await this.stripeService.createCheckoutSession(orderData.orderItems)
+      } else {
+        dingerData = await this.dingerService.Pay(orderData)
       }
+
       if (!customerAddress) {
         shipping_address = transactionalEntityManager.create(Address, addressPayload);
         shipping_address = await transactionalEntityManager.save(shipping_address);
@@ -77,7 +94,6 @@ export class OrdersService extends BaseService<Order> {
         return Number(item.priceAtOrder) * Number(item.quantity)
       }).reduce((sum, current) => sum + current, 0)
 
-      const dingerData = await this.dingerService.Pay(orderData)
       try {
         let order = transactionalEntityManager.create(Order, {
           total_amount: totalAmount,
@@ -85,6 +101,7 @@ export class OrdersService extends BaseService<Order> {
           payment_status: PAYMENT_STATUS.PENDING,
           payment_method: orderData.paymentMethod,
           stripe_session_id: checkoutSession ? checkoutSession?.id : null,
+          dinger_transaction_id: dingerData ? dingerData.transactionNum : null,
           customer: {
             id: customer?.id
           },
@@ -110,12 +127,61 @@ export class OrdersService extends BaseService<Order> {
           })
 
           await transactionalEntityManager.save(orderItem)
+
+          if (orderData.paymentMethod == "card") {
+            let stripeLog = transactionalEntityManager.create(StripeLog, {
+              session: checkoutSession?.id,
+              status: PAYMENT_STATUS.PENDING,
+              amount: totalAmount,
+              orderId: order.id,
+              customerId: customer?.id
+            })
+            await transactionalEntityManager.save(stripeLog)
+
+            let paymentLog = transactionalEntityManager.create(PaymentLog, {
+              transaction_id: checkoutSession?.id,
+              status: PAYMENT_STATUS.PENDING,
+              amount: totalAmount,
+              method: 'card',
+              provider: 'stripe',
+              orderId: order.id,
+              customerId: customer?.id
+            })
+
+            await transactionalEntityManager.save(paymentLog)
+          } else {
+            const dingerProviderData = getMethodAndProvider(orderData.paymentMethod);
+
+            const newDingerLog = transactionalEntityManager.create(DingerLog, {
+              transactionNum: dingerData.transactionNum,
+              status: PAYMENT_STATUS.PENDING,
+              amount: Number(dingerData.totalAmount),
+              orderId: order.id,
+              customerId: customer?.id,
+              method: dingerProviderData?.method,
+              provider: dingerProviderData?.provider
+            })
+
+            await transactionalEntityManager.save(newDingerLog)
+
+            let paymentLog = transactionalEntityManager.create(PaymentLog, {
+              transaction_id: dingerData.transactionNum,
+              status: PAYMENT_STATUS.PENDING,
+              amount: Number(dingerData.totalAmount),
+              method: dingerProviderData?.method,
+              provider: dingerProviderData?.provider,
+              orderId: order.id,
+              customerId: customer?.id
+            })
+
+            await transactionalEntityManager.save(paymentLog)
+
+          }
         }))
-        console.log('dingerData: ', dingerData)
         return {
           order,
           stripeSessionId: checkoutSession?.id,
-          dingerData,
+          dingerData: dingerData ?? null,
         }
       } catch (error) {
         console.error(error)
@@ -125,11 +191,16 @@ export class OrdersService extends BaseService<Order> {
     return newOrder;
   }
 
-  async updatePaymentStatus(stripe_session_id: string, payment_status) {
+  async updatePaymentStatus(transactionId: string, payment_status) {
     const order = await this.orderRepository.findOne({
-      where: {
-        stripe_session_id,
-      },
+      where: [
+        {
+          stripe_session_id: transactionId
+        },
+        {
+          dinger_transaction_id: transactionId
+        }
+      ],
     });
 
     if (!order) {
@@ -143,7 +214,27 @@ export class OrdersService extends BaseService<Order> {
     return order;
   }
 
-  private GetDingerToken() {
+  async findMyOrder(user) {
+    const orders = await this.orderRepository.find({
+      where: {
+        customer: {
+          id: user.user_id
+        }
+      },
+      relations: ['order_items']
+    })
 
+    return orders
+  }
+
+  async checkPaymentStatus({ transactionId }: { transactionId: string }) {
+    console.log('id', transactionId)
+    console.log(new Date())
+    console.log('.........')
+    return this.orderRepository.findOne({
+      where: {
+        dinger_transaction_id: transactionId
+      }
+    })
   }
 }

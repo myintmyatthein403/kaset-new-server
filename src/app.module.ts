@@ -51,6 +51,10 @@ import { StripeWebhookModule } from './stripe/stripe-webhook/stripe-webhook.modu
 import { DingerModule } from './modules/payment-services/dinger/dinger.module';
 import { CollectionsModule } from './modules/music-services/collections/collections.module';
 import { CheckoutModule } from './modules/payment-services/checkout/checkout.module';
+import { PaymentLogModule } from './modules/payment-services/payment-log/payment-log.module';
+import { DingerLogModule } from './modules/payment-services/dinger-log/dinger-log.module';
+import { StripeLogModule } from './modules/payment-services/stripe-log/stripe-log.module';
+import { OrderLogModule } from './modules/order-services/order-log/order-log.module';
 
 @Module({
   imports: [
@@ -120,6 +124,10 @@ import { CheckoutModule } from './modules/payment-services/checkout/checkout.mod
     DingerModule,
     CollectionsModule,
     CheckoutModule,
+    PaymentLogModule,
+    DingerLogModule,
+    StripeLogModule,
+    OrderLogModule,
   ],
   controllers: [AppController, StripeWebhookController],
   providers: [AppService],

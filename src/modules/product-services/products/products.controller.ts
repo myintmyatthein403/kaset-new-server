@@ -102,7 +102,7 @@ export class ProductsController {
   @ApiParam({ name: 'id', type: String, description: 'Entity ID' })
   @ApiResponse({ status: 200, description: 'Entity soft deleted successfully' })
   async remove(@Param('id') id: string) {
-    return this.baseService.remove(id);
+    return this.baseService.removeProducts(id);
   }
 
   @UseGuards(JwtAuthGuard)

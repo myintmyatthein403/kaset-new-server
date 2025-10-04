@@ -6,6 +6,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "type
 import { OrderItem } from "../../order-items/entities/order-item.entity";
 import { BaseEntity } from "src/common/base/base.entity";
 import { Customer } from "src/modules/user-services/customer/entities/customer.entity";
+import { StripeLog } from "src/modules/payment-services/stripe-log/entities/stripe-log.entity";
 
 @Entity('orders')
 export class Order extends BaseEntity {
@@ -29,7 +30,12 @@ export class Order extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   @IsString()
   @IsOptional()
-  stripe_session_id: string;
+  stripe_session_id?: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @IsString()
+  @IsOptional()
+  dinger_transaction_id?: string;
 
   @ManyToOne(() => Customer, { eager: true })
   customer: Customer;
@@ -39,4 +45,5 @@ export class Order extends BaseEntity {
 
   @ManyToOne(() => Address, { eager: true })
   shipping_address: Address
+
 }

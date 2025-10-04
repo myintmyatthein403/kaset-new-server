@@ -82,6 +82,15 @@ export class OrdersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/slug/me')
+  async findMyOrder(
+    @Req() req: any,
+  ) {
+    const user = req.user;
+    return this.baseService.findMyOrder(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update an entity by ID' })
   @ApiParam({ name: 'id', type: String, description: 'Entity ID' })
@@ -122,6 +131,15 @@ export class OrdersController {
   @ApiResponse({ status: 200, description: 'Entities deleted successfully' })
   async deleteMany(@Body() body: { ids: string[] }) {
     return this.baseService.deleteMany(body);
+  }
+
+  @UseGuards(JwtOrApiKeyGuard)
+  @Get('/check/payment-status')
+  async checkPaymentStatus(
+    @Query() query: any
+  ) {
+    console.log(query)
+    return this.baseService.checkPaymentStatus(query)
   }
 }
 

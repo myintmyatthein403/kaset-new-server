@@ -40,6 +40,10 @@ export class Product extends BaseEntity {
   @IsBoolean()
   is_out_of_stock: boolean;
 
+  @Column({ type: 'boolean', default: true })
+  @IsBoolean()
+  is_active: boolean;
+
 
   @Column({ type: 'text', nullable: true })
   @IsString()

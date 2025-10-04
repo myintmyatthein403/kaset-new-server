@@ -1,7 +1,8 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { BaseEntity } from "src/common/base/base.entity";
 import { ACCOUNT_STATUS } from "src/common/enums/enums";
-import { Column, Entity } from "typeorm";
+import { StripeLog } from "src/modules/payment-services/stripe-log/entities/stripe-log.entity";
+import { Column, Entity, OneToMany } from "typeorm";
 
 @Entity('customers')
 export class Customer extends BaseEntity {
@@ -51,4 +52,5 @@ export class Customer extends BaseEntity {
   @Column({ type: 'timestamptz', nullable: true })
   @IsOptional()
   banned_until?: Date;
+
 }
