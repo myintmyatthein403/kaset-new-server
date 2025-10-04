@@ -1,4 +1,4 @@
-import { Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post, Query } from '@nestjs/common';
 import { CheckoutService } from './checkout.service';
 
 @Controller('checkout')
@@ -7,7 +7,7 @@ export class CheckoutController {
 
   @Post('/callback')
   getCallback(
-    @Query() data: any
+    @Body() data: any
   ) {
     return this.checkoutService.getCallback(data);
   }
