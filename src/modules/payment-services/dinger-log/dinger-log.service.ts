@@ -44,7 +44,7 @@ export class DingerLogService {
       throw new BadRequestException(`Session not found or already processed`)
     } else {
       const newStripeLog = this.dingerLogRepository.create({
-        session: sessionId,
+        transactionNum: sessionId,
         orderId: stripeLog.orderId,
         customerId: stripeLog.customerId,
         ...data,
