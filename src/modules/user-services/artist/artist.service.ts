@@ -49,11 +49,11 @@ export class ArtistService {
       bio,
       slug,
       location,
+      featured_video,
       claimable,
       profile_image,
       email,
       cover_image,
-      featured_videos,
     } = createArtistDto;
 
     let role;
@@ -102,7 +102,7 @@ export class ArtistService {
       location,
       profile_image,
       cover_image,
-      featured_videos,
+      featured_video,
       social_media_links: socialMediaIds,
     });
 
@@ -157,7 +157,6 @@ export class ArtistService {
         'albums'
       ]
     });
-    console.log(user)
     return {
       ...user?.user_profile,
       tracks: user?.tracks,

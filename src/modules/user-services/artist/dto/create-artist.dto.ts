@@ -11,9 +11,7 @@ export class CreateArtistDto {
   cover_image?: {
     id: string;
   };
-  featured_videos?: {
-    id: string;
-  }[];
+  featured_video?: string;
   pairs: {
     id: string;
     dropdownValue: string;

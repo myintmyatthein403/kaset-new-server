@@ -40,11 +40,10 @@ export class UserProfile extends BaseEntity {
   @JoinColumn({ name: 'cover_image_id' })
   cover_image: Media;
 
-  @OneToMany(() => Media, (media) => media.user_profile, {
-    eager: true,
-    nullable: true,
-  })
-  featured_videos: Media[];
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @IsOptional()
+  @IsString()
+  featured_video: string;
 
   @OneToMany(
     () => SocialMediaLink,

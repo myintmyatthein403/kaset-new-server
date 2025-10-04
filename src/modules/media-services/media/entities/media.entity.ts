@@ -29,9 +29,6 @@ export class Media extends BaseEntity {
   @IsEnum(MediaType)
   type: MediaType;
 
-  @ManyToOne(() => UserProfile, (user_profile) => user_profile.featured_videos, { onDelete: 'CASCADE', })
-  user_profile: UserProfile;
-
   @ManyToOne(() => Track, (track) => track.story_boards, { onDelete: 'CASCADE' })
   track_story_board: Track;
 

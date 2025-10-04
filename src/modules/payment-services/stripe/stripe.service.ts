@@ -143,12 +143,13 @@ export class StripeService {
     })
 
     try {
+      const webUrl = this.configService.get('WEB_URL');
       const session = await this.stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: lineItems,
         mode: 'payment',
-        success_url: 'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url: 'http://localhost:3000/cancel',
+        success_url: `${webUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${webUrl}/cancel`,
       });
 
       return session;

@@ -14,6 +14,7 @@ export class AddressService extends BaseService<Address> {
   }
 
   async findMyAddresses(userId: string) {
+    console.log(userId)
     return this.addressService.find({ where: { customer: { id: userId } } });
   }
 }

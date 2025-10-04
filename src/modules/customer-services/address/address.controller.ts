@@ -14,6 +14,6 @@ export class AddressController extends BaseController<Address> {
     @Req() req: any
   ) {
     const user = req.user;
-    return this.addressService.findMyAddresses(user.sub);
+    return this.addressService.findMyAddresses(user.user_id);
   }
 }
