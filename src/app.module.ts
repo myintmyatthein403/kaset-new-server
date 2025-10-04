@@ -50,6 +50,7 @@ import { StripeWebhookController } from './stripe/stripe-webhook/stripe-webhook.
 import { StripeWebhookModule } from './stripe/stripe-webhook/stripe-webhook.module';
 import { DingerModule } from './modules/payment-services/dinger/dinger.module';
 import { CollectionsModule } from './modules/music-services/collections/collections.module';
+import { CheckoutModule } from './modules/payment-services/checkout/checkout.module';
 
 @Module({
   imports: [
@@ -118,6 +119,7 @@ import { CollectionsModule } from './modules/music-services/collections/collecti
     StripeWebhookModule,
     DingerModule,
     CollectionsModule,
+    CheckoutModule,
   ],
   controllers: [AppController, StripeWebhookController],
   providers: [AppService],
