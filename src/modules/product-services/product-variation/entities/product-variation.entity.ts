@@ -59,6 +59,13 @@ export class ProductVariation extends BaseEntity {
   color_code?: string;
 
   @Column({
+    type: 'int',
+    default: 0,
+  })
+  @IsString()
+  stock: number;
+
+  @Column({
     type: 'boolean',
     default: false,
   })

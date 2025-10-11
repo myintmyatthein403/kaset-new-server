@@ -23,6 +23,6 @@ export class OrderItem extends BaseEntity {
   @ManyToOne(() => ProductVariation, { eager: true })
   variation: ProductVariation
 
-  @ManyToOne(() => Order, { eager: true })
+  @ManyToOne(() => Order)
   order: Order;
 }

@@ -1,4 +1,4 @@
-import { DeepPartial, In, Repository } from 'typeorm';
+import { DeepPartial, FindOptionsOrderValue, In, Repository } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
@@ -18,12 +18,14 @@ export class BaseService<T extends BaseEntity> {
     const skip = (page - 1) * limit;
 
     const whereClause = buildWhereCondition(filters);
-
     const [data, totalItems] = await this.repository.findAndCount({
       where: whereClause,
       relations: relations,
       take: limit,
       skip: skip,
+      order: {
+        createdAt: "DESC"
+      } as any
     });
 
     const totalPages = Math.ceil(totalItems / limit);

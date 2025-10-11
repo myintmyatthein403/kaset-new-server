@@ -40,7 +40,7 @@ export class Order extends BaseEntity {
   @ManyToOne(() => Customer, { eager: true })
   customer: Customer;
 
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, { eager: true })
   order_items: OrderItem[]
 
   @ManyToOne(() => Address, { eager: true })

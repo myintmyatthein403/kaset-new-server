@@ -208,7 +208,7 @@ export class OrdersService extends BaseService<Order> {
     }
 
     order.payment_status = payment_status;
-    order.order_status = payment_status == PAYMENT_STATUS.PAID ? ORDER_STAUTS.PROCESSING : ORDER_STAUTS.PENDING;
+    //order.order_status = payment_status == PAYMENT_STATUS.PAID ? ORDER_STAUTS.PROCESSING : ORDER_STAUTS.PENDING;
     await this.orderRepository.save(order);
 
     return order;
