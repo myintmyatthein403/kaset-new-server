@@ -22,6 +22,11 @@ export class Album extends BaseEntity {
   @IsOptional()
   description?: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @IsString()
+  @IsOptional()
+  released_date?: string;
+
   @OneToOne(() => Media, { nullable: true, onDelete: 'SET NULL', eager: true })
   @JoinColumn({ name: 'cover_id' }) // Specify the foreign key column name
   cover?: Media;

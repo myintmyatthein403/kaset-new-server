@@ -42,6 +42,11 @@ export class Track extends BaseEntity {
   @IsOptional()
   duration?: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @IsString()
+  @IsOptional()
+  released_date?: string;
+
   @Index()
   @Column({ type: 'varchar', length: 150, nullable: true })
   @IsString()
