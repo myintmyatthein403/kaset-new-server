@@ -40,9 +40,11 @@ export enum GENDER_TYPES {
 }
 
 export enum ORDER_STAUTS {
+  PLACED = 'placed',
   PENDING = 'pending',
   PROCESSING = 'processing',
-  SHIPPED = 'shipped'
+  SHIPPED = 'shipped',
+  DELIVERED = 'delivered'
 }
 
 export enum PAYMENT_STATUS {
