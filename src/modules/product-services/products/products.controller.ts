@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ApiOperation, ApiBody, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { JwtOrApiKeyGuard } from 'src/common/guards/jwt-or-api-key.guard';
@@ -18,8 +18,12 @@ export class ProductsController {
   @ApiOperation({ summary: 'Create a new API token (requires JWT)' })
   @ApiBody({ description: 'Entity data', type: Object })
   @ApiResponse({ status: 201, description: 'API token created successfully' })
-  async create(@Body() data: any) {
-    return this.baseService.createNewProduct(data);
+  async create(
+    @Body() data: any,
+    @Req() req: any,
+  ) {
+    const createdBy = req.user.user_id
+    return this.baseService.createNewProduct({ ...data, createdBy });
   }
 
   @UseGuards(JwtOrApiKeyGuard)

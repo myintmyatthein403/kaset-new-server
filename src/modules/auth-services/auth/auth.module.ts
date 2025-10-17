@@ -9,13 +9,14 @@ import { LoggerModule } from 'src/common/services/logger/logger.module';
 import { TokenModule } from 'src/common/services/token/token.module';
 import { User } from 'src/modules/user-services/user/entities/user.entity';
 import { JwtStrategy } from 'src/common/strategies/jwt.strategies';
+import { Role } from 'src/modules/user-services/role/entities/role.entity';
 
 @Module({
   imports: [
     LoggerModule,
     TokenModule,
     TypeOrmModule.forFeature([
-      User,
+      User, Role
     ]),
     JwtModule.register({
       privateKey: fs.readFileSync(

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, Query, UseGuards, Req } from '@nestjs/common';
 import { AlbumService } from './album.service';
 import { ApiOperation, ApiBody, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { JwtOrApiKeyGuard } from 'src/common/guards/jwt-or-api-key.guard';
@@ -18,8 +18,12 @@ export class AlbumController {
   @ApiOperation({ summary: 'Create a new API token (requires JWT)' })
   @ApiBody({ description: 'Entity data', type: Object })
   @ApiResponse({ status: 201, description: 'API token created successfully' })
-  async create(@Body() data: any) {
-    return this.baseService.create(data);
+  async create(
+    @Body() data: any,
+    @Req() req: any,
+  ) {
+    const createdBy = req.user.user_id
+    return this.baseService.create({ ...data, createdBy });
   }
 
   @UseGuards(JwtOrApiKeyGuard)

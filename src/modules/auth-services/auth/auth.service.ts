@@ -17,6 +17,7 @@ import { LoginInfo, Payload } from 'src/common/types/types';
 import { WinstonLoggerService } from 'src/common/services/logger/winston-logger.service';
 import { TokenService } from 'src/common/services/token/token.service';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from 'src/modules/user-services/role/entities/role.entity';
 // import { DeviceSessionService } from '../device-session/device-session.service';
 
 @Injectable()
@@ -30,6 +31,9 @@ export class AuthService {
     // private readonly loginAttemptService: LoginAttemptService,
 
     // private readonly deviceSessionService: DeviceSessionService,
+
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
 
     private readonly tokenService: TokenService,
 
@@ -149,6 +153,8 @@ export class AuthService {
   async register(registerAuthDto: RegisterAuthDto) {
     const user = await this.searchUser(registerAuthDto.email);
 
+    const role = await this.findOrCreateAdminRole();
+
     if (user !== null) {
       this.logger.error(
         `Attempted to register with an existing email: ${registerAuthDto.email}`,
@@ -164,6 +170,7 @@ export class AuthService {
     let newUser = this.userRepository.create({
       ...registerAuthDto,
       passwordHash: passwordHash,
+      role: role,
     });
 
     newUser = await this.userRepository.save(newUser);
@@ -177,6 +184,32 @@ export class AuthService {
       },
       data: instanceToPlain(newUser),
     };
+  }
+
+  // This function will find the role, or create it if it doesn't exist, and return the role object.
+  async findOrCreateAdminRole(): Promise<Role> {
+
+    // 1. Attempt to find the role
+    let role = await this.roleRepository.findOne({
+      where: {
+        name: 'Admin'
+      }
+    });
+
+    // 2. If the role doesn't exist, create and save it
+    if (!role) {
+      console.log("Admin role not found. Creating new 'admin' role.");
+
+      const newRole = this.roleRepository.create({
+        name: 'admin',
+      });
+
+      // Save the new role, and the returned object is the persisted entity (with its ID, etc.)
+      role = await this.roleRepository.save(newRole);
+    }
+
+    // 3. The 'role' variable now definitely holds the 'admin' Role entity (either found or newly created).
+    return role;
   }
 
   async login(loginAuthDto: LoginAuthDto, ip: string, userAgent: string) {

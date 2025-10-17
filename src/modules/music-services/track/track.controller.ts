@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
@@ -32,8 +33,12 @@ export class TrackController {
   @ApiOperation({ summary: 'Create a new API token (requires JWT)' })
   @ApiBody({ description: 'Entity data', type: Object })
   @ApiResponse({ status: 201, description: 'API token created successfully' })
-  async create(@Body() data: any) {
-    return this.baseService.create(data);
+  async create(
+    @Body() data: any,
+    @Req() req: any,
+  ) {
+    const createdBy = req.user.user_id
+    return this.baseService.create({ ...data, createdBy });
   }
 
   @UseGuards(JwtOrApiKeyGuard)
