@@ -24,6 +24,7 @@ export class StripeWebhookController {
   async handleWebhook(@Headers('stripe-signature') signature: string, @Req() req: any) {
     let event: Stripe.Event;
     const rawBody = req.rawBody;
+    console.log('rawBody', rawBody)
     event = this.stripe.webhooks.constructEvent(rawBody, signature, this.webhookSecret)
     const session = event.data.object as any;
 
@@ -31,9 +32,12 @@ export class StripeWebhookController {
 
       case 'checkout.session.completed':
         if (session.status === 'complete') {
-          await this.orderService.updatePaymentStatus(session?.id, PAYMENT_STATUS.PAID);
-          await this.stripeLogService.createStripeLog(session?.id, PAYMENT_STATUS.PAID);
-          await this.paymentLogService.createPaymentLog(session?.id, PAYMENT_STATUS.PAID);
+          if (session.payment_status === "paid") {
+            await this.orderService.updatePaymentStatus(session?.id, PAYMENT_STATUS.PAID, session.payment_intent);
+            await this.stripeLogService.createStripeLog(session?.id, PAYMENT_STATUS.PAID);
+            await this.paymentLogService.createPaymentLog(session?.id, PAYMENT_STATUS.PAID);
+          }
+
         } else {
           await this.orderService.updatePaymentStatus(session.id, PAYMENT_STATUS.FAILED);
           await this.stripeLogService.createStripeLog(session.id, PAYMENT_STATUS.FAILED);

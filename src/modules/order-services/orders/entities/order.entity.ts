@@ -35,6 +35,11 @@ export class Order extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   @IsString()
   @IsOptional()
+  stripe_transaction_id?: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @IsString()
+  @IsOptional()
   dinger_transaction_id?: string;
 
   @ManyToOne(() => Customer, { eager: true })
