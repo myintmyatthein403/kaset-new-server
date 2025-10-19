@@ -128,17 +128,21 @@ export class ArtistService {
     return newProfile;
   }
 
-  async findAll() {
-    const users = await this.userRepository.find({
-      where: {
-        role: {
-          name: 'Artist',
-        },
-        status: ACCOUNT_STATUS.ACTIVE,
+  async findAll(name = 'user') {
+    const whereCondition: any = {
+      role: {
+        name: 'Artist',
       },
+    };
+
+    if (name == 'user') {
+      whereCondition.status = ACCOUNT_STATUS.ACTIVE;
+    }
+    const users = await this.userRepository.find({
+      where: whereCondition,
       relations: ['user_profile.social_media_links']
     });
-    return users.map(user => ({ ...user.user_profile, userId: user.id }))
+    return users.map(user => ({ ...user.user_profile, userId: user.id, status: user.status }))
   }
 
   findOne(id: number) {
@@ -213,5 +217,14 @@ export class ArtistService {
 
   remove(id: number) {
     return `This action removes a #${id} artist`;
+  }
+
+  async updateStatus(id: string, status: ACCOUNT_STATUS) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    user.status = status;
+    return this.userRepository.save(user);
   }
 }

@@ -6,6 +6,8 @@ import { SocialMediaLink } from 'src/modules/setting-services/social-media-links
 import { UserProfile } from '../user-profile/entities/user-profile.entity';
 import { User } from '../user/entities/user.entity';
 import { Role } from '../role/entities/role.entity';
+import { ApiToken } from 'src/modules/auth-services/api-token/entities/api-token.entity';
+import { ApiKeyGuard } from 'src/common/guards/api-key.guard';
 
 @Module({
   imports: [
@@ -13,10 +15,11 @@ import { Role } from '../role/entities/role.entity';
       SocialMediaLink,
       UserProfile,
       User,
-      Role
+      Role,
+      ApiToken
     ])
   ],
   controllers: [ArtistController],
-  providers: [ArtistService],
+  providers: [ArtistService, ApiKeyGuard],
 })
 export class ArtistModule { }
