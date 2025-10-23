@@ -50,46 +50,67 @@ export class ProductsService extends BaseService<Product> {
       // Step 1: Update the main product data.
       await transactionalEntityManager.update(Product, id, productData);
 
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
       // Step 2: Handle product variations (Soft Delete for removal).
       if (variations && variations.length > 0) {
-        // ID ပါသော Variations များကို ထိန်းသိမ်းရမည့် စာရင်းအဖြစ် သတ်မှတ်
-        // Filters for variations that have an ID (i.e., existing ones)
-        const variationIdsToKeep = variations.filter(v => v.id).map(v => v.id);
+        const variationsToSave = variations.map(v => {
+        let variationId = v.id;
 
-        // ✅ 1. ဖျက်ပစ်လိုသော Variations များကို Soft Delete ပြုလုပ်ခြင်း (Order-items ကို မထိခိုက်စေရန်)
-        // Soft-deletes existing variations that were NOT included in the incoming list.
-        await transactionalEntityManager.update(
-          ProductVariation, {
-          product: {
-            id: id
-          },
-          // Selects existing variations whose IDs are NOT in the 'to keep' list
-          id: Not(In(variationIdsToKeep)),
-          deletedAt: IsNull() // Only soft-delete if not already deleted
-        },
-          // Sets the deletedAt field to the current date
-          {
+        // 1. Check if the incoming ID is NOT a valid UUID (i.e., it's a temporary ID)
+        if (variationId && !uuidRegex.test(variationId)) {
+            // If it's a temporary ID, set it to undefined/null so TypeORM inserts a new record.
+            variationId = undefined;
+        }
+        
+        // 2. Return the prepared object
+        return {
+            ...v,
+            // Use the checked ID (UUID for update, undefined for new insert)
+            id: variationId, 
+            product: {
+                id: id
+            },
+            is_out_of_stock: v.stock <= 0,
+            deletedAt: null
+        };
+    });
+        console.log(variationsToSave)
+
+        // const savedVariations = await transactionalEntityManager.save(ProductVariation, variationsToSave);
+
+// 3. Keep လုပ်ရမည့် IDs များကို စုစည်းခြင်း (Identify IDs to Keep) 🆔
+        const variationIdsToKeep = variations
+          .map(v => v.id)
+          .filter(v => v !== undefined)
+          .filter(id => id && uuidRegex.test(id));
+
+      
+
+
+        console.log('variations:', variations)
+        console.log('variationIdsToKeep: ', variationIdsToKeep)
+        if(variationIdsToKeep.length <= 0) {
+          await transactionalEntityManager.save(ProductVariation, variationsToSave);
+        } 
+        else {
+          // If there are variations to keep, update existing ones and add new ones.
+          // First, soft-delete variations that are not in the `variationIdsToKeep` list.
+          await transactionalEntityManager.update(
+            ProductVariation, {
+            product: {
+              id: id
+            },
+            id: Not(In(variationIdsToKeep)),
+            deletedAt: IsNull()
+          }, {
             deletedAt: new Date()
           }
-        );
+          );
 
-        // ✅ 2. အသစ်ထပ်ထည့်ရန် သို့မဟုတ် ရှိပြီးသားကို Update လုပ်ရန်
-        // Prepares the variations data for saving/updating
-        const updatedVariations = variations.map(v => ({
-          ...v,
-          // Automatically sets stock status based on the provided stock level
-          is_out_of_stock: v.stock > 0 ? false : true,
-          product: {
-            id: id
-          },
-          // When updating or undeleting an existing variation, ensure deleted_at is null
-          deletedAt: null
-        }));
-
-        // save() သည် ID ပါလျှင် Update လုပ်ပြီး၊ ID မပါလျှင် Insert လုပ်သည်။
-        // This is the key operation: it performs bulk Upsert (Update or Insert).
-        await transactionalEntityManager.save(ProductVariation, updatedVariations as DeepPartial<ProductVariation>[]);
-      } else if (variations && variations.length === 0) {
+          // Then, save or update the variations that are in the `variationIdsToKeep` list.
+          await transactionalEntityManager.save(ProductVariation, variationsToSave);
+        }
+              } else if (variations && variations.length === 0) {
         // If the client sends an empty array, soft-delete ALL variations for this product
         await transactionalEntityManager.update(
           ProductVariation, {
@@ -103,7 +124,6 @@ export class ProductsService extends BaseService<Product> {
         );
       }
 
-      // Step 3: Handle product images (Images အတွက် Hard Delete ကို ဆက်လက် အသုံးပြုနိုင်သည်)
       if (product_images) {
         const imageIdsToKeep = product_images.filter(i => i.id).map(i => i.id);
         await transactionalEntityManager.delete(Media, {
@@ -119,7 +139,7 @@ export class ProductsService extends BaseService<Product> {
       // (သင့် Product Repository တွင် Soft Deleted Variations များကို ဖယ်ထုတ်ရန် စီမံထားရမည်)
       return await transactionalEntityManager.findOne(Product, {
         where: { id },
-        relations: ['varinpx shadcn-ui@latest add sonnerations', 'product_images']
+        relations: ['variations', 'product_images']
       });
     });
   }
