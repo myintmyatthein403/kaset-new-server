@@ -12,7 +12,7 @@ export class UserProfile extends BaseEntity {
   @IsString()
   name: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()
   @IsEmail()
   email?: string;
@@ -27,7 +27,7 @@ export class UserProfile extends BaseEntity {
   @IsString()
   slug: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()
   @IsString()
   location?: string;
