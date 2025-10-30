@@ -19,6 +19,7 @@ import { User } from 'src/modules/user-services/user/entities/user.entity';
 import { Album } from '../../album/entities/album.entity';
 import { Genre } from '../../genres/entities/genre.entity';
 import { PopularTrack } from '../../popular-tracks/entities/popular-track.entity';
+import { CreditValue } from '../../credit-values/entities/credit-value.entity';
 
 @Entity('tracks')
 export class Track extends BaseEntity {
@@ -112,6 +113,9 @@ export class Track extends BaseEntity {
 
   @OneToMany(() => MusicLink, (ml) => ml.track, { eager: true })
   music_links: MusicLink[];
+
+  @OneToMany(() => CreditValue, cv => cv.track, { eager: true })
+  credit_values: CreditValue[];
 
   @ManyToMany(() => User, (user) => user.tracks, { eager: true })
   artists: User[];

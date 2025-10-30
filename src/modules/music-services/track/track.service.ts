@@ -35,7 +35,7 @@ export class TrackService extends BaseService<Track> {
     // 1. Find the existing Track, including its relationships
     const trackToUpdate = await this.trackRepository.findOne({
       where: { id },
-      relations: ['artists', 'genres', 'music_links'],
+      relations: ['artists', 'genres', 'music_links', 'credit_values'],
     });
 
     if (!trackToUpdate) {
@@ -72,6 +72,7 @@ export class TrackService extends BaseService<Track> {
 
     // Assign the links from the DTO. Assuming these links have been updated/created.
     trackToUpdate.music_links = updateTrackDto.music_links;
+    trackToUpdate.credit_values = updateTrackDto.credit_values;
 
 
     // 5. Use the `save` method to persist all changes, including the relationships

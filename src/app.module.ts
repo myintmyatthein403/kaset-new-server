@@ -55,6 +55,8 @@ import { PaymentLogModule } from './modules/payment-services/payment-log/payment
 import { DingerLogModule } from './modules/payment-services/dinger-log/dinger-log.module';
 import { StripeLogModule } from './modules/payment-services/stripe-log/stripe-log.module';
 import { OrderLogModule } from './modules/order-services/order-log/order-log.module';
+import { CreditKeysModule } from './modules/music-services/credit-keys/credit-keys.module';
+import { CreditValuesModule } from './modules/music-services/credit-values/credit-values.module';
 
 @Module({
   imports: [
@@ -128,6 +130,8 @@ import { OrderLogModule } from './modules/order-services/order-log/order-log.mod
     DingerLogModule,
     StripeLogModule,
     OrderLogModule,
+    CreditKeysModule,
+    CreditValuesModule,
   ],
   controllers: [AppController, StripeWebhookController],
   providers: [AppService],
