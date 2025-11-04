@@ -15,6 +15,11 @@ export class Order extends BaseEntity {
   @IsNotEmpty()
   total_amount: number;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @IsString()
+  @IsOptional()
+  order_id: string;
+
   @Column({ type: 'enum', enum: ORDER_STAUTS, default: ORDER_STAUTS.PENDING })
   @IsEnum(ORDER_STAUTS)
   order_status: ORDER_STAUTS;

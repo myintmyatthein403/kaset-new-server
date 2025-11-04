@@ -59,7 +59,8 @@ export enum PAYMENT_METHOD {
   COD = "cod",
   CARD = "card",
   KBZ_PAY_QR = "kbz_pay_qr",
-  KBZ_PAY_PWA = "kbz_pay_pwa"
+  KBZ_PAY_PWA = "kbz_pay_pwa",
+  PROMPT_PAY = "prompt_pay"
 }
 
 export enum LYRIC_TYPE {

@@ -275,7 +275,7 @@ export class OrdersService extends BaseService<Order> {
       let dingerData;
       if (orderData.paymentMethod == "card") {
         checkoutSession = await this.stripeService.createCheckoutSession(orderData.orderItems);
-      } else {
+      } else if (orderData.paymentMethod == "dinger") {
         dingerData = await this.dingerService.Pay(orderData);
       }
 
@@ -302,6 +302,7 @@ export class OrdersService extends BaseService<Order> {
           order_status: ORDER_STAUTS.PENDING,
           payment_status: PAYMENT_STATUS.PENDING,
           payment_method: orderData.paymentMethod,
+          order_id: orderData.order_id,
           stripe_session_id: checkoutSession ? checkoutSession?.id : null,
           dinger_transaction_id: dingerData ? dingerData.transactionNum : null,
           customer: {
@@ -370,7 +371,7 @@ export class OrdersService extends BaseService<Order> {
               customerId: customer.id
             });
             await transactionalEntityManager.save(paymentLog);
-          } else {
+          } else if (orderData.paymentMethod == "dinger") {
             const dingerProviderData = getMethodAndProvider(orderData.paymentMethod);
 
             const newDingerLog = transactionalEntityManager.create(DingerLog, {
