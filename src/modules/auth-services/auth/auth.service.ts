@@ -302,7 +302,7 @@ export class AuthService {
   }
 
   async googleAuthRedirect(accessToken: string) {
-    console.log(accessToken)
+    console.log('google auth', accessToken);
     return accessToken;
   }
   /* async lineLogin(lineLoginAuthDto: any) {

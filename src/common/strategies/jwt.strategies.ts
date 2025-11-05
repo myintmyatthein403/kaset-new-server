@@ -18,9 +18,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   validate(payload: Payload) {
     if (!payload) {
+      console.log('Payload is empty!');
       throw new UnauthorizedException();
     }
-
+    console.log(
+      'payload', payload
+    )
     return {
       user_id: payload.sub,
       role: payload.role ? payload.role?.name : "",

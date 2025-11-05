@@ -41,6 +41,8 @@ export class CustomerService extends BaseService<Customer> {
       sub: customer.id,
     }
     const refresh_token = this.tokenService.generateRefreshToken(payload);
+
+    console.log(refresh_token);
     return {
       ...customer,
       jwt_token: refresh_token

@@ -10,44 +10,37 @@ export class Address extends BaseEntity {
   @IsOptional()
   address?: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255 })
   @IsString()
-  @IsOptional()
-  house_number?: string;
+  house_number: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255 })
   @IsString()
-  @IsOptional()
-  road?: string;
+  road: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: "varchar", length: 255 })
   @IsString()
-  @IsOptional()
-  district?: string;
+  district: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255 })
   @IsString()
-  @IsOptional()
-  sub_district?: string;
+  sub_district: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255 })
   @IsString()
-  @IsOptional()
-  province?: string;
+  province: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255 })
   @IsString()
-  @IsOptional()
-  country?: string;
+  country: string;
 
-  @Column({ type: 'varchar', length: 10, nullable: true })
+  @Column({ type: 'varchar', length: 10 })
   @IsString()
-  postal_code?: string;
+  postal_code: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 20 })
   @IsPhoneNumber()
-  @IsOptional()
-  phone_number?: string
+  phone_number: string
 
   @ManyToOne(() => Customer, { onDelete: 'CASCADE', eager: true })
   customer: Customer
