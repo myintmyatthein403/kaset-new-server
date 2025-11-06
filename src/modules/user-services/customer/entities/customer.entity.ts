@@ -31,9 +31,9 @@ export class Customer extends BaseEntity {
   @IsOptional()
   image: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   access_token: string;
 
   @Column({
