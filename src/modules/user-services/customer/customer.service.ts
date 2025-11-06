@@ -24,8 +24,11 @@ export class CustomerService extends BaseService<Customer> {
     if (!customer) {
       const newCustomer = this.customerRepository.create(data);
       const createdCustomer = await this.customerRepository.save(newCustomer);
+      const cus = await this.customerRepository.findOne({
+        where: { email }
+      })
       const payload = {
-        sub: createdCustomer[0]?.id,
+        sub: cus?.id as string
       }
       const refresh_token = this.tokenService.generateRefreshToken(payload)
       return {
