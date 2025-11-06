@@ -100,7 +100,7 @@ export class OrdersController {
     @Param('id') id: string,
     @Body() data: QueryDeepPartialEntity<ApiToken>,
   ) {
-    return this.baseService.update(id, data);
+    return this.baseService.updateOrder(id, data);
   }
 
   @UseGuards(JwtAuthGuard)

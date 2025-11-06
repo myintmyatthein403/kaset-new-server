@@ -25,6 +25,9 @@ export class OrdersService extends BaseService<Order> {
     @InjectRepository(StripeLog)
     private readonly stripeLogRepository: Repository<StripeLog>,
 
+    @InjectRepository(ProductVariation)
+    private readonly productVariationRepository: Repository<ProductVariation>,
+
 
     @InjectDataSource()
     private readonly dataSource: DataSource,
@@ -449,6 +452,48 @@ export class OrdersService extends BaseService<Order> {
     })
 
     return orders
+  }
+
+  async updateOrder(id: string, data: any) {
+    // Order Status က CANCELLED ဖြစ်မယ့် အခြေအနေကို စစ်ဆေးခြင်း
+    if (data.order_status === ORDER_STAUTS.CANCELLED) {
+
+      const order = await this.orderRepository.findOne({ where: { id } });
+
+      // 1. Stock Rollback လုပ်ငန်းစဉ်အတွက် Promises များကို ဖန်တီးခြင်း
+      const stockUpdatePromises = order?.order_items.map(async (item) => {
+        // Stock ပြန်ထည့်ခြင်း
+        await this.productVariationRepository.increment(
+          { id: item.variation.id },
+          'stock',
+          Number(item.quantity) // item.quantity ကို number အဖြစ် သေချာပြောင်းထားသည်
+        );
+        // is_out_of_stock ကို false အဖြစ် သတ်မှတ်ရန် (အကယ်၍ stock ပြန်ဝင်လာပါက)
+        await this.productVariationRepository.update(
+          { id: item.variation.id },
+          { is_out_of_stock: false }
+        );
+      });
+
+      // 2. Promises အားလုံး ပြီးဆုံးသည်အထိ စောင့်ဆိုင်းခြင်း (Blocking)
+      if (stockUpdatePromises) {
+        await Promise.all(stockUpdatePromises);
+      }
+
+      // 3. Order Status နှင့် Payment Status ကို update လုပ်ခြင်း
+      await this.orderRepository.update(id, {
+        ...data,
+        order_status: ORDER_STAUTS.CANCELLED,
+        payment_status: PAYMENT_STATUS.CANCELLED, // Payment Status ကိုပါ Cancel လုပ်ရန် ထည့်သွင်းစဉ်းစားသင့်
+      });
+
+    } else {
+      // CANCELLED မဟုတ်သော တခြား Status များအတွက်သာ update လုပ်ခြင်း
+      await this.orderRepository.update(id, data);
+    }
+
+    // update ပြီးနောက် အချက်အလက်အသစ်ကို return ပြန်ပေးခြင်း
+    return this.findOne(id);
   }
 
   async checkPaymentStatus({ transactionId }: { transactionId: string }) {

@@ -11,11 +11,12 @@ import { DingerLog } from 'src/modules/payment-services/dinger-log/entities/ding
 import { PaymentLog } from 'src/modules/payment-services/payment-log/entities/payment-log.entity';
 import { ApiToken } from 'src/modules/auth-services/api-token/entities/api-token.entity';
 import { ApiKeyGuard } from 'src/common/guards/api-key.guard';
+import { ProductVariation } from 'src/modules/product-services/product-variation/entities/product-variation.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [Order, StripeLog, DingerLog, PaymentLog, ApiToken]
+      [Order, StripeLog, DingerLog, PaymentLog, ApiToken, ProductVariation]
     ),
     StripeModule,
     DingerModule,
